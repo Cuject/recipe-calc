@@ -1,19 +1,18 @@
-<script lang="ts">
+<script lang="js">
 	import { list_arr } from "../stores/teststores";
 	export let user = "";
 	export let form_call_add = "";
 	export let form_call_del = "";
-	import { enhance, type SubmitFunction } from '$app/forms';
 
 
-  const handleSubmit: SubmitFunction = () => {
+  /*const handleSubmit: SubmitFunction = () => {
     return async ({result, update}) => {
       await update();
       if (result.type === "success") {
         console.log("sent to mongo database")
       }
     };
-  }
+  }*/
 
 
 
@@ -48,11 +47,10 @@
 	}
 </script>
 
-<form method="POST" style="display:inline-flex" use:enhance={handleSubmit}>
-	<input type="text" placeholder="Add a food item" bind:value={recipe_name}/>
+<form method="POST" style="display:inline-flex">
+	<input type="text" name="append_input" placeholder="Add a food item" bind:value={recipe_name}/>
 	<button on:click={addToArray} formaction={form_call_add}>Add item</button>
 </form>
-
 
 <button on:click={show}>
 	Show

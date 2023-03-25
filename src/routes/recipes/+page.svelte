@@ -8,6 +8,8 @@
   import ListArr from "$lib/storeTestcomps/list_arr.svelte";
   import { list_arr } from "$lib/stores/teststores";
   import { recipe_list_arr } from "$lib/stores/recipes";
+
+  //only for testing
   
   //first change
   //second change
@@ -100,8 +102,6 @@
 
 
 
-
-
 <div>
   <h1>Food Item List from FCT</h1>
   <p>Connected with email {user.email}</p>
@@ -158,11 +158,7 @@
 
 
   {#if tab == 3}
-    
     <ListArr user={user.email} form_call_add="?/append_recipes" form_call_del="?/remove_recipes"/>
-    <form method="POST">
-      <button formaction="?/append_recipes">FOR TESTING APPEND RECIPES</button>
-    </form>
   {/if}
 </div>
 
