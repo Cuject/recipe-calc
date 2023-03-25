@@ -45,8 +45,20 @@ export const actions: Actions = {
 
     remove_recipes: async({ cookies }) => {
       const {user, db} = await getUser(cookies)
+
       db.collection<recipe>("recipes").deleteOne({user:user.email, name:"4hf9a4hfa9hw", food_items:[] });
-      console.log(recipe_list_arr)
+      
+      const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
+      console.log(recipes_data)
+    },
+
+    save_recipes: async({ cookies }) => {
+      const {user, db} = await getUser(cookies)
+
+      db.collection<recipe>("recipes").deleteOne({user:user.email, name:"4hf9a4hfa9hw", food_items:[] });
+      
+      const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
+      console.log(recipes_data)
     }
 
     ,
