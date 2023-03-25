@@ -10,12 +10,13 @@
   import { recipe_list_arr } from "$lib/stores/recipes";
 
   //first change
+  //second change
   
   let store_arr: any[];
 
   const unsubscribe1 = list_arr.subscribe(value => {
 		store_arr = value;
-	});
+	}); 
 
   onDestroy(unsubscribe1)
 
