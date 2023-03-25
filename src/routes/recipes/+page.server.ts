@@ -35,11 +35,14 @@ export const load: PageServerLoad = async ({ cookies }) => {
 
 
 export const actions: Actions = {
-    append_recipes: async({ cookies }) => {
+    append_recipes: async({ cookies, request }) => {
+
+      const form_data = await request.formData();
       const {user, db} = await getUser(cookies)
       //const db = (await clientPromise).db(DATABASE_NAME)
       db.collection<recipe>("recipes").insertOne({user:user.email, name:"4hf9a4hfa9hw", food_items:[] });
-      //console.log(list_arr)
+      console.log("result:")
+      console.log(form_data)
       //goto("/recipes")
     },
 
@@ -55,13 +58,43 @@ export const actions: Actions = {
     save_recipes: async({ cookies }) => {
       const {user, db} = await getUser(cookies)
 
-      db.collection<recipe>("recipes").deleteOne({user:user.email, name:"4hf9a4hfa9hw", food_items:[] });
+      //Goal: replace each matched named recipe's 
+      //(that belong's to the logged in user) data to the one in the array store
       
       const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
-      console.log(recipes_data)
+      //console.log(recipes_data)
     }
 
     ,
+    // This is simply added for testing purposes
+    login: async ({ cookies, request }) => {
+      try {
+        const data = await request.formData();
+        const email = data.get('email') as string;
+        const password = data.get('password') as string;
+        const client = await clientPromise;
+        const db = client.db(DATABASE_NAME);
+        const user = await db
+          .collection<User>("users")
+          .findOne({ email });
+        console.log(data) // print on console the data in the field
+        if (user == null) {
+          return fail(401, {
+            error: "The user doesn't exist, or the email address is not correct."
+          });
+        }
+        if (!validatePassword(password, user.password)) {
+          return fail(401, {
+            error: "Wrong password, or email address."
+          });
+        }
+        cookies.set("userId", encryptUserId(user._id.toString(), ip.address()), { path: "/", sameSite: true, secure: true });
+      } catch (e) {
+        return fail(400, {
+          error: "Cannot login"
+        });
+      }
+    }, 
     
 }
 
