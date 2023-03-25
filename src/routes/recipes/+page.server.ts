@@ -35,17 +35,18 @@ export const load: PageServerLoad = async ({ cookies }) => {
 
 
 export const actions: Actions = {
-    append_recipes: async() => {
-      const db = (await clientPromise).db(DATABASE_NAME)
-      db.collection<recipe>("recipes").insertOne({user:"dummy@gmail.com", name:"4hf9a4hfa9hw", food_items:[] });
+    append_recipes: async({ cookies }) => {
+      const {user, db} = await getUser(cookies)
+      //const db = (await clientPromise).db(DATABASE_NAME)
+      db.collection<recipe>("recipes").insertOne({user:user.email, name:"4hf9a4hfa9hw", food_items:[] });
       //console.log(list_arr)
       //goto("/recipes")
     },
 
-    remove_recipes: async() => {
-      const db = (await clientPromise).db(DATABASE_NAME)
-      db.collection<recipe>("recipes").deleteOne({user:"dummy@gmail.com", name:"4hf9a4hfa9hw", food_items:[] });
-      console.log(recipe_list_arr[0])
+    remove_recipes: async({ cookies }) => {
+      const {user, db} = await getUser(cookies)
+      db.collection<recipe>("recipes").deleteOne({user:user.email, name:"4hf9a4hfa9hw", food_items:[] });
+      console.log(recipe_list_arr)
     }
 
     ,
