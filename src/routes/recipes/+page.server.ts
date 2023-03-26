@@ -40,10 +40,17 @@ export const actions: Actions = {
       const form_data = await request.formData();
       const append_input = form_data.get("append_input") as string
       const {user, db} = await getUser(cookies)
+      const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
+      const recipes_names = recipes_data.map((recipe_name) => {return recipe_name.name})
       //const db = (await clientPromise).db(DATABASE_NAME)
-      db.collection<recipe>("recipes").insertOne({user:user.email, name:append_input, food_items:[] });
+      if(append_input == "" || recipes_names.includes(append_input)){ // if empty string or if name already exists for user (will make a replace method later)
+        //console.log(recipes_names.includes(append_input))
+      }else{
+        db.collection<recipe>("recipes").insertOne({user:user.email, name:append_input, food_items:[] });
+      }
+      
      // console.log("result:")
-      console.log(append_input) // IT FUCKING WORKS LET'S GOOOOOOOOOOOOOO
+      //console.log(recipes_names.includes(append_input)) // IT FUCKING WORKS LET'S GOOOOOOOOOOOOOO
       //goto("/recipes")
     },
 

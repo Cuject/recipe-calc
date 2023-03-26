@@ -20,17 +20,14 @@
 	let count_pressed = 0
 	
 	const addToArray = () => {
-		const name_arr = $list_arr.map(n => ( n.name.toString() ));
-		if(name_arr.includes(recipe_name) || recipe_name == ""){
-			console.log("empty string or name already exists")
-		}else{
+
 			$list_arr = [...$list_arr, {
 			name: recipe_name,
 			user: user,
 			food_items: []
 			}];
 
-		}
+		
 	};
 
 	const subtractFromArray = () => {
@@ -45,6 +42,11 @@
 		console.log("you pressed on a recipe " + String(count_pressed) + " times")
 		count_pressed += 1
 	}
+
+	/**
+	 * @param {string} id
+	 */
+	function show_pressed_id(id){ console.log(id)}
 </script>
 
 <form method="POST" style="display:inline-flex">
@@ -61,7 +63,7 @@
 	{item.name}
 	<div>	
 		<button>View</button>
-		<form method="POST" style="display:inline-flex"><button formaction={form_call_del}>Delete</button></form>
+		<form method="POST" style="display:inline-flex"><button formaction={form_call_del}>Delete </button></form>
 	</div>
 </div>
 
