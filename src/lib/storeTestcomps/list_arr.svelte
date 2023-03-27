@@ -1,5 +1,6 @@
 <script lang="js">
 	import { list_arr } from "../stores/teststores";
+	import { setIndex } from "$lib/stores/recipes";
 	export let user = "";
 	export let form_call_add = "";
 	export let form_call_del = "";
@@ -38,15 +39,13 @@
 		console.log($list_arr)
 	}
 
-	function show_food_items(){
-		console.log("you pressed on a recipe " + String(count_pressed) + " times")
-		count_pressed += 1
-	}
-
 	/**
-	 * @param {string} id
+	 * @param {any} index
 	 */
-	function show_pressed_id(id){ console.log(id)}
+	function show_food_index(index){
+		console.log(index)
+		
+	}
 </script>
 
 <form method="POST" style="display:inline-flex">
@@ -58,12 +57,17 @@
 	Show
 </button>
 
-{#each $list_arr as item}
+<button on:click={() => setIndex(5)}>Set Index</button>
+
+{#each $list_arr as item, i}
 <div id = "recipe_box">
 	{item.name}
 	<div>	
 		<button>View</button>
-		<form method="POST" style="display:inline-flex"><button formaction={form_call_del}>Delete </button></form>
+		<form method="POST" style="display:inline-flex">
+			<input type="number" name="index" bind:value={i} style="display: none;"/>
+			<button formaction={form_call_del} >Delete</button>
+		</form>
 	</div>
 </div>
 

@@ -9,10 +9,10 @@ import ip from "ip";
 import { list_arr } from "$lib/stores/teststores";
 import { goto } from "$app/navigation";
 import { recipe_list_arr } from "$lib/stores/recipes";
+import { get } from "svelte/store";
 
 
-
-
+const test_Arr = [1, 2, 3, 4, 5];
 
 
 
@@ -54,13 +54,21 @@ export const actions: Actions = {
       //goto("/recipes")
     },
 
-    remove_recipes: async({ cookies }) => {
+    remove_recipes: async({ cookies , request}) => {
       const {user, db} = await getUser(cookies)
-
-      db.collection<recipe>("recipes").deleteOne({user:user.email, name:"recipe4444444", food_items:[] });
-      
+      const index_data = await request.formData();
+      const index = Number(index_data.get("index"))
       const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
-      //console.log(recipes_data)
+      const recipes_names = recipes_data.map((recipe_name) => {return recipe_name.name})
+
+      db.collection<recipe>("recipes").deleteOne({user:user.email, name:recipes_names[index], food_items:[] });
+      
+      
+      //console.log(recipes_names[2])
+      //console.log("called delete method")
+      //console.log(test_Arr)
+      //console.log(myValue)
+      //console.log(Number(index_data.get("index")))
     },
 
     save_recipes: async({ cookies }) => {

@@ -3,7 +3,7 @@
 	import { goto } from "$app/navigation";
 	import Box from "$lib/box.svelte";
 	import { createSearchStore, searchHandler } from "$lib/stores/search";
-	import { onDestroy } from "svelte";
+	import { beforeUpdate, onDestroy } from "svelte";
   import { onMount } from "svelte";
   import ListArr from "$lib/storeTestcomps/list_arr.svelte";
   import { list_arr } from "$lib/stores/teststores";
@@ -39,7 +39,7 @@
 		$list_arr = <any>recipes;
 	};
 
-  onMount(addToArray)
+  beforeUpdate(addToArray)
 
   
 
