@@ -10,6 +10,8 @@ import { list_arr } from "$lib/stores/teststores";
 import { goto } from "$app/navigation";
 import { recipe_list_arr } from "$lib/stores/recipes";
 import { get } from "svelte/store";
+import { myValue } from './+page.svelte';
+import { select_index } from "$lib/stores/recipes";
 
 
 const test_Arr = [1, 2, 3, 4, 5];

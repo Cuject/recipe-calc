@@ -89,6 +89,13 @@
   
 </script>
 
+<script context="module" lang="ts"> 
+    export var myValue = "Hello, world!";
+    export function setValue(newValue: string) {
+      myValue = newValue;
+    }
+</script>
+
 <div id="navButtons">
   <button on:click={print}>data</button>
   <button on:click={print_recipes}>data recipes</button>
