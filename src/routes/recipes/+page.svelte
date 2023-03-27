@@ -6,8 +6,23 @@
 	import { beforeUpdate, onDestroy } from "svelte";
   import { onMount } from "svelte";
   import ListArr from "$lib/storeTestcomps/list_arr.svelte";
-  import { list_arr } from "$lib/stores/teststores";
+  import { count, list_arr } from "$lib/stores/teststores";
   import { recipe_list_arr } from "$lib/stores/recipes";
+	import FoodItems from "$lib/foodItems.svelte";
+  import { tab_select } from "$lib/stores/tabs";
+	import { get } from "svelte/store";
+  import Count from "$lib/storeTestcomps/count.svelte";
+  import { recipe_index } from "$lib/stores/teststores";
+
+  let tabValue = 0;
+  let recipe_indexValue = 0;
+
+  const tab_unsub = tab_select.subscribe(value => {tabValue = value;});
+  const recipe_unsub = recipe_index.subscribe(value => {recipe_indexValue= value;});
+
+  onDestroy(recipe_unsub)
+  onDestroy(tab_unsub);
+
 
   //only for testing
   
@@ -22,11 +37,11 @@
 
   onDestroy(unsubscribe1)
 
-
-  let tab = 3;
+  $:reactive_recipeValue = recipe_indexValue;
+  $:tab = tabValue;
 
   export let data: PageData;
-  $: ({foodItems, user, recipes} = data);
+  $: ({foodItems, user, recipes, recipe_items} = data);
 
   const searchfoodItems = data.foodItems.map((foodItem) => ({
     ...foodItem,
@@ -73,17 +88,18 @@
 
   function print(){console.log(data.foodItems)}
   function print_recipes(){console.log(data.recipes)}
-  function filter(){tab = 0}
-  function table(){tab = 1}
-  function list(){tab = 2}
+  function filter(){tab_select.set(0);}
+  function table(){tab_select.set(1);}
+  function list(){tab_select.set(2);}
   function recipes_list(){
-    tab = 3;
+    tab_select.set(3);
     addToArray();
   }
-
+  function food_item_list(){tab_select.set(4);}
 
 
   function display_arr(){console.log(recipe_list_arr)}
+  function show_food_items_arr(){console.log(recipe_items[reactive_recipeValue])}
 
   //console.log("Onload FIRE");
   
@@ -101,9 +117,11 @@
   <button on:click={print_recipes}>data recipes</button>
   <button on:click={filter}>filter</button>
   <button on:click={table}>table</button>
-  <button on:click={list}>list</button>
-  <button on:click={recipes_list}>recipe list</button>
-  <button on:click={display_arr}>display store array</button>
+  <button on:click={recipes_list}>recipes list</button>
+  <button on:click={food_item_list}>foodItems list</button>
+  <button on:click={display_arr}>recipes store array</button>
+  <button on:click={show_food_items_arr}>food items store array of index {reactive_recipeValue}</button>
+
   <button on:click={logOut} disabled={loading}>{loading ? "Loading..." : "Log out"}</button>
 </div>
 
@@ -111,6 +129,8 @@
 
 <div>
   <h1>Food Item List from FCT</h1>
+  <h2>currently on tab {tabValue}</h2>
+  <h2>currently on recipe index {reactive_recipeValue}</h2>
   <p>Connected with email {user.email}</p>
   <p><a href="/profile">See your profile</a></p>
   <hr />
@@ -165,7 +185,35 @@
 
 
   {#if tab == 3}
-    <ListArr user={user.email} form_call_add="?/append_recipes" form_call_del="?/remove_recipes"/>
+    <ListArr user={user.email} form_call_add="?/append_recipes" form_call_del="?/remove_recipes" />
+  {/if}
+
+  {#if tab == 4}
+    <h1>FOOD ITEMS</h1>
+    {#if recipe_items[reactive_recipeValue].length != 0}
+      <button>Add Food Item</button>
+      <h2>'{recipe_list_arr[reactive_recipeValue].name}' food items:</h2>
+      <table>
+        {#each recipe_items[reactive_recipeValue] as foodItem}
+          <tr>
+            <td>{foodItem.qty}</td>
+            <td>{foodItem.food_ID}</td>
+          </tr>
+        
+        {/each}
+      </table>
+      <button on:click={recipes_list}>Back to Recipes List</button>
+
+    {:else}
+      <button>Add Food Item</button>
+      <h2>'{recipe_list_arr[reactive_recipeValue].name}' is empty</h2>
+      <button on:click={recipes_list}>Back to Recipes List</button>
+    {/if}
+
+  {/if}
+
+  {#if tab==5}
+    <Count/>
   {/if}
 </div>
 

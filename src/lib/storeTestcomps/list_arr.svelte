@@ -1,9 +1,16 @@
 <script lang="js">
 	import { list_arr } from "../stores/teststores";
 	import { setIndex } from "$lib/stores/recipes";
+	import { tab_select } from "$lib/stores/tabs";
+	import { recipe_index } from "$lib/stores/teststores";
+
 	export let user = "";
 	export let form_call_add = "";
 	export let form_call_del = "";
+	//export let form_call_foodItems = "";
+
+	function tab_change(){tab_select.set(4)}
+
 
 
   /*const handleSubmit: SubmitFunction = () => {
@@ -14,7 +21,6 @@
       }
     };
   }*/
-
 
 
 	$: recipe_name = ""
@@ -43,14 +49,16 @@
 	 * @param {any} index
 	 */
 	function show_food_index(index){
-		console.log(index)
-		
+		console.log(index);
+		recipe_index.set(index);
+		tab_select.set(4)
+
 	}
 </script>
 
 <form method="POST" style="display:inline-flex">
-	<input type="text" name="append_input" placeholder="Add a food item" bind:value={recipe_name}/>
-	<button on:click={addToArray} formaction={form_call_add}>Add item</button>
+	<input type="text" name="append_input" placeholder="Add new recipe" bind:value={recipe_name}/>
+	<button on:click={addToArray} formaction={form_call_add}>Add recipe</button>
 </form>
 
 <button on:click={show}>
@@ -63,9 +71,9 @@
 <div id = "recipe_box">
 	{item.name}
 	<div>	
-		<button>View</button>
+		<button on:click={() => show_food_index(i)}>View</button>
 		<form method="POST" style="display:inline-flex">
-			<input type="number" name="index" bind:value={i} style="display: none;"/>
+			<input type="number" name="index" bind:value={i} />
 			<button formaction={form_call_del} >Delete</button>
 		</form>
 	</div>

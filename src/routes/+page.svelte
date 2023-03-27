@@ -34,7 +34,7 @@
       <input type="password" name="password" placeholder="Password" required />
       <button formaction="?/login" disabled={loading}>{loading ? "Loading..." : "Log in"}</button>
       <button formaction="?/register" disabled={loading}>{loading ? "Loading..." : "Register"}</button>
-      <button>Log in as Guest</button>
+      <button disabled={loading}>{loading ? "Loading..." : "Log in as Guest"}</button>
     </form>
     <p style="color:red;">{form.error}</p>
   {:else}
@@ -44,10 +44,10 @@
         <input type="password" name="password" placeholder="Password" required />
         <button formaction="?/login" disabled={loading}>{loading ? "Loading..." : "Log in"}</button>
         <button formaction="?/register" disabled={loading}>{loading ? "Loading..." : "Register"}</button>
-        <button>Log in as Guest</button>
+        <button disabled={loading}>{loading ? "Loading..." : "Log in as Guest"}</button>
       </form>
     {:else}
-      <p>Go look at the <a href="/recipes">projects</a></p>
+      <p>Go look at the <a href="/recipes">recipes</a></p>
     {/if}
   {/if}
 </main>

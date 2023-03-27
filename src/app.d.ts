@@ -53,10 +53,15 @@ declare global {
 		cholesterol: string;
 	}
 
+	interface food_item_element {
+		food_ID: string,
+		qty: number
+	}
+
 	interface recipe {
 		name : string,
 		user : string,
-		food_items: []
+		food_items: food_item_element[]
 	}
 
 	interface dummy {

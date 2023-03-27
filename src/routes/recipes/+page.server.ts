@@ -1,20 +1,9 @@
 import type { PageServerLoad } from "./$types";
 import getUser from "$db/getUser";
 import type { Actions } from './$types';
-import { DATABASE_NAME } from '$env/static/private';
-import { fail } from '@sveltejs/kit';
-import { encryptUserId, hashPassword, validatePassword } from '$db/security';
-import clientPromise from "$db/mongo";
-import ip from "ip";
-import { list_arr } from "$lib/stores/teststores";
-import { goto } from "$app/navigation";
-import { recipe_list_arr } from "$lib/stores/recipes";
-import { get } from "svelte/store";
-import { myValue } from './+page.svelte';
-import { select_index } from "$lib/stores/recipes";
 
 
-const test_Arr = [1, 2, 3, 4, 5];
+var recipe_items_arr: food_item_element[] = []
 
 
 
@@ -22,11 +11,13 @@ export const load: PageServerLoad = async ({ cookies }) => {
   const {user, db} = await getUser(cookies);
   const fct_data = await db.collection<food_item>("fct").find({}).toArray();
   const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
+  const recipes_foodItems = recipes_data.map((recipe_item) => {return recipe_item.food_items})
 
   
   return {
     foodItems: fct_data.map(v => ({ ...v, _id: v._id.toString() })),
     recipes: recipes_data.map(r => ({ ...r, _id: r._id.toString() })),
+    recipe_items: recipes_foodItems,
 
     user: {
       email: user.email
@@ -57,9 +48,9 @@ export const actions: Actions = {
     },
 
     remove_recipes: async({ cookies , request}) => {
-      const {user, db} = await getUser(cookies)
+      const {user, db} = await getUser(cookies);
       const index_data = await request.formData();
-      const index = Number(index_data.get("index"))
+      const index = Number(index_data.get("index"));
       const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
       const recipes_names = recipes_data.map((recipe_name) => {return recipe_name.name})
 
@@ -71,6 +62,7 @@ export const actions: Actions = {
       //console.log(test_Arr)
       //console.log(myValue)
       //console.log(Number(index_data.get("index")))
+      console.log(index)
     },
 
     save_recipes: async({ cookies }) => {
@@ -81,7 +73,19 @@ export const actions: Actions = {
       
       const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
       //console.log(recipes_data)
+    },
+
+    recipe_food_items: async({ cookies, request }) => {
+      const {user, db} = await getUser(cookies);
+      const index_data = await request.formData();
+      const index = Number(index_data.get("index"));
+      const recipes_data = await db.collection<recipe>("recipes").find({user:user.email}).toArray();
+      const recipes_foodItems = recipes_data.map((recipe_item) => {return recipe_item.food_items})
+
+      console.log(recipes_foodItems[index]) // show the arrays of food items
+      recipe_items_arr = recipes_foodItems[index]
     }
+
 
     , 
     
