@@ -86,6 +86,10 @@
 
   }
 
+  function show(){
+
+  }
+
   function print(){console.log(data.foodItems)}
   function print_recipes(){console.log(data.recipes)}
   function filter(){tab_select.set(0);}
@@ -102,6 +106,16 @@
   function show_food_items_arr(){console.log(recipe_items[reactive_recipeValue])}
 
   //console.log("Onload FIRE");
+
+  
+  function fct_item_name_pass(nameKey: string, myArray: string | any[]){
+    for (let i=0; i < myArray.length; i++) {
+        if (myArray[i].food_ID === nameKey) {
+            return myArray[i];
+        }
+    }
+  }
+
   
 </script>
 
@@ -120,6 +134,7 @@
   <button on:click={recipes_list}>recipes list</button>
   <button on:click={food_item_list}>foodItems list</button>
   <button on:click={display_arr}>recipes store array</button>
+  <button on:click={show}>show</button>
   <button on:click={show_food_items_arr}>food items store array of index {reactive_recipeValue}</button>
 
   <button on:click={logOut} disabled={loading}>{loading ? "Loading..." : "Log out"}</button>
@@ -194,11 +209,22 @@
       <button>Add Food Item</button>
       <h2>'{recipe_list_arr[reactive_recipeValue].name}' food items:</h2>
       <table>
+        
         {#each recipe_items[reactive_recipeValue] as foodItem}
           <tr>
-            <td>{foodItem.qty}</td>
+            <td>
+              <form>
+                <input type="number" bind:value={foodItem.qty}/>
+              </form>
+            </td>
             <td>{foodItem.food_ID}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.food_ND}</td>
+            <td>{(Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy) * foodItem.qty).toFixed(2)}</td>
+            <td><button>View</button></td>
+            <td><button>Delete</button></td>
           </tr>
+            
+          
         
         {/each}
       </table>

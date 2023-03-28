@@ -73,7 +73,7 @@
 	<div>	
 		<button on:click={() => show_food_index(i)}>View</button>
 		<form method="POST" style="display:inline-flex">
-			<input type="number" name="index" bind:value={i} />
+			<input type="number" name="index" bind:value={i} style="display: none;" />
 			<button formaction={form_call_del} >Delete</button>
 		</form>
 	</div>
