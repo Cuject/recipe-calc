@@ -30,6 +30,7 @@
   //second change
   
   let store_arr: any[];
+  $:new_food_item = "";
 
   const unsubscribe1 = list_arr.subscribe(value => {
 		store_arr = value;
@@ -114,6 +115,10 @@
             return myArray[i];
         }
     }
+  }
+
+  function append_to_food_item_array(){
+
   }
 
   
@@ -206,22 +211,66 @@
   {#if tab == 4}
     <h1>FOOD ITEMS</h1>
     {#if recipe_items[reactive_recipeValue].length != 0}
-      <button>Add Food Item</button>
+      <form>
+        <input type="text" bind:value={new_food_item}/>
+        <button on:click={() => {
+
+          
+          console.log(recipe_items[reactive_recipeValue]); 
+          recipe_items[reactive_recipeValue].push({food_ID:new_food_item, qty:100}); 
+          recipe_items[reactive_recipeValue] = recipe_items[reactive_recipeValue];
+        
+
+        }}>Add Food Item</button>
+      </form>
+      
       <h2>'{recipe_list_arr[reactive_recipeValue].name}' food items:</h2>
       <table>
+        <tr style="font-weight: bolder;">
+          <td>Qty. (g)</td>
+          <td>food ID</td>
+          <td>Food name and Description</td>
+          <td>Common Name</td>
+          <td>Edible Portion (%)</td>
+          <td>water (g)</td>
+          <td>energy (kcal)</td>
+          <td>protein (g)</td>
+          <td>total_fat (g)</td>
+          <td>carbohydrates (g)</td>
+          <td>ash (g)</td>
+          <td>fiber (g)</td>
+          <td>sugars (g)</td>
+          <td></td>
+        </tr>
         
         {#each recipe_items[reactive_recipeValue] as foodItem}
           <tr>
-            <td>
+            <td >
               <form>
-                <input type="number" bind:value={foodItem.qty}/>
+                <input type="number" bind:value={foodItem.qty} style="width: 60px;"/>
               </form>
             </td>
             <td>{foodItem.food_ID}</td>
             <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.food_ND}</td>
-            <td>{(Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy) * foodItem.qty).toFixed(2)}</td>
-            <td><button>View</button></td>
-            <td><button>Delete</button></td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.com_Name}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.edi_Portion}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.water)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.protein)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.total_fat)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.carbohydrates)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.ash)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.fiber)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.sugars)/100) * foodItem.qty).toFixed(2)}</td>
+            
+            <td>
+              <button>View</button>
+              <button>Delete</button>
+            </td>
+          </tr>
+
+          <tr>
+
           </tr>
             
           
