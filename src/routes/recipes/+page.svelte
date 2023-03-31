@@ -13,6 +13,7 @@
 	import { get } from "svelte/store";
   import Count from "$lib/storeTestcomps/count.svelte";
   import { recipe_index } from "$lib/stores/teststores";
+	import Chart from "$lib/Chart.svelte";
 
   let tabValue = 0;
   let recipe_indexValue = 0;
@@ -121,6 +122,8 @@
 
   }
 
+
+  let water_sum = 0;
   
 </script>
 
@@ -141,6 +144,8 @@
   <button on:click={display_arr}>recipes store array</button>
   <button on:click={show}>show</button>
   <button on:click={show_food_items_arr}>food items store array of index {reactive_recipeValue}</button>
+  <button on:click={() => {tab_select.set(6); console.log(tab)}}>Chart Display Test</button>
+  
 
   <button on:click={logOut} disabled={loading}>{loading ? "Loading..." : "Log out"}</button>
 </div>
@@ -243,44 +248,67 @@
           <td></td>
         </tr>
         
-        {#each recipe_items[reactive_recipeValue] as foodItem}
+        {#each recipe_items[reactive_recipeValue] as foodItem, i}
           <tr>
             <td >
-              <form>
-                <input type="number" bind:value={foodItem.qty} style="width: 60px;"/>
+              <form on:change={() => {
+                console.log(recipe_items[reactive_recipeValue].map(v => ( v.food_ID ))[i]);
+                if(foodItems.find(element => element.food_ID == foodItem.food_ID)?.water  == "-"){
+                  water_sum += 0;
+                }else{ water_sum += ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.water)/100) * foodItem.qty)}
+
+                
+                }}>
+                <input type="number" step=0.01 bind:value={foodItem.qty} style="width: 60px;"/>
               </form>
             </td>
             <td>{foodItem.food_ID}</td>
-            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.food_ND}</td>
-            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.com_Name}</td>
-            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.edi_Portion}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.water)/100) * foodItem.qty).toFixed(2)}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy)/100) * foodItem.qty).toFixed(2)}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.protein)/100) * foodItem.qty).toFixed(2)}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.total_fat)/100) * foodItem.qty).toFixed(2)}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.carbohydrates)/100) * foodItem.qty).toFixed(2)}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.ash)/100) * foodItem.qty).toFixed(2)}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.fiber)/100) * foodItem.qty).toFixed(2)}</td>
-            <td>{((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.sugars)/100) * foodItem.qty).toFixed(2)}</td>
-            
-            <td>
-              <button>View</button>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.food_ND       }</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.com_Name      }</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.edi_Portion   }</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.water         == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.water)/100)         * foodItem.qty).toFixed(2)}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy        == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy)/100)        * foodItem.qty).toFixed(2)}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.protein       == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.protein)/100)       * foodItem.qty).toFixed(2)}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.total_fat     == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.total_fat)/100)     * foodItem.qty).toFixed(2)}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.carbohydrates == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.carbohydrates)/100) * foodItem.qty).toFixed(2)}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.ash           == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.ash)/100)           * foodItem.qty).toFixed(2)}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.fiber         == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.fiber)/100)         * foodItem.qty).toFixed(2)}</td>
+            <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.sugars        == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.sugars)/100)        * foodItem.qty).toFixed(2)}</td>
+            <td style="display:flex;">
+              <button>View {i}</button>
               <button>Delete</button>
+
             </td>
           </tr>
-
-          <tr>
-
-          </tr>
-            
-          
-        
         {/each}
+
+        <tr>
+          <td colspan="5" style="text-align: center; font-weight:bold;">Total</td>
+          <td>{(water_sum = water_sum)}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
       </table>
       <button on:click={recipes_list}>Back to Recipes List</button>
 
     {:else}
-      <button>Add Food Item</button>
+    <form>
+      <input type="text" bind:value={new_food_item}/>
+      <button on:click={() => {
+
+        
+        console.log(recipe_items[reactive_recipeValue]); 
+        recipe_items[reactive_recipeValue].push({food_ID:new_food_item, qty:100}); 
+        recipe_items[reactive_recipeValue] = recipe_items[reactive_recipeValue];
+      
+
+      }}>Add Food Item</button>
+    </form>
       <h2>'{recipe_list_arr[reactive_recipeValue].name}' is empty</h2>
       <button on:click={recipes_list}>Back to Recipes List</button>
     {/if}
@@ -290,6 +318,12 @@
   {#if tab==5}
     <Count/>
   {/if}
+
+  {#if tab==6}
+    <Chart/>
+  {/if}
+
+
 </div>
 
 
