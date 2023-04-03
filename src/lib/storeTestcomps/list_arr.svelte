@@ -52,6 +52,7 @@
 		console.log(index);
 		recipe_index.set(index);
 		tab_select.set(4)
+		
 
 	}
 </script>
