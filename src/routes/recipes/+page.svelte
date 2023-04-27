@@ -73,7 +73,7 @@
 
   onDestroy(unsubscribe1)
 
-  $:reactive_recipeValue = recipe_indexValue;
+  $:reactive_recipeIndex = recipe_indexValue;
   $:tab = tabValue;
 
   export let data: PageData;
@@ -132,6 +132,16 @@
   function table         (){tab_select.set(1);}
   function list          (){tab_select.set(2);}
 
+  function array_sum_func(addend_array: string | any[]){
+    let sum = 0;
+    for(let i = 0; i < addend_array.length; i++){
+      sum += addend_array[i];
+    }
+
+    return sum
+
+  }
+
   function recipes_list(){
     tab_select.set(3);
     addToArray();
@@ -140,7 +150,7 @@
 
 
   function display_arr(){console.log(recipe_list_arr)}
-  function show_food_items_arr(){console.log(recipe_items[reactive_recipeValue])}
+  function show_food_items_arr(){console.log(recipe_items[reactive_recipeIndex])}
 
   //console.log("Onload FIRE");
 
@@ -159,14 +169,14 @@
 
 
   
-  let water_sum_arr:   number[] = [];
-  let energy_sum_arr:  number[] = [];
-  let protein_sum_arr: number[] = [];
-  let fat_sum_arr:     number[] = [];
-  let carb_sum_arr:    number[] = [];
-  let ash_sum_arr:     number[] = [];
-  let fiber_sum_arr:   number[] = [];
-  let sugar_sum_arr:   number[] = [];
+  $: water_sum_arr     = [];
+  $: energy_sum_arr    = [];
+  $: protein_sum_arr   = [] ;
+  $: fat_sum_arr       = [];
+  $: carb_sum_arr      = [];
+  $: ash_sum_arr       = [];
+  $: fiber_sum_arr     = [];
+  $: sugar_sum_arr     = [];
 
 
   $:water_sum   = 0;
@@ -179,6 +189,7 @@
   $:sugar_sum   = 0;
 
   let sample_value = 9;
+  let sample_arr = [1,2,3,4,5];
 
 
   function sumFunc(sum_arr: number[]){
@@ -212,8 +223,13 @@
   <button on:click={display_arr}    >  recipes store array </button>
   <button on:click={show}           >  show                </button>
 
-  <button on:click={show_food_items_arr}>  food items store array of index {reactive_recipeValue}</button>
+  <button on:click={show_food_items_arr}>  food items store array of index {reactive_recipeIndex}</button>
   <button on:click={() => {tab_select.set(6); console.log(tab)}}>Chart Display Test</button>
+
+  <button on:click={() => {console.log("Water Sum Array: " + water_sum_arr)}}     >  show food data array                </button>
+  <button on:click={() => {console.log(array_sum_func(water_sum_arr))}}     >  data array sum           </button>
+
+
   
 
   <button on:click={logOut} disabled={loading}>{loading ? "Loading..." : "Log out"}</button>
@@ -224,7 +240,7 @@
 <div>
   <h1>  Food Item List from FCT                            </h1>
   <h2>  currently on tab {tabValue}                        </h2>
-  <h2>  currently on recipe index {reactive_recipeValue}   </h2>
+  <h2>  currently on recipe index {reactive_recipeIndex}   </h2>
   <p>   Connected with email {user.email}                  </p>
   <p>   <a href="/profile">See your profile</a>            </p>
   <hr/>
@@ -284,7 +300,7 @@
 
   {#if tab == 4}
     <h1>FOOD ITEMS</h1>
-    <div style="width:500px; height:500px">
+    <div style="width:500px; height:500px; display:none">
       <Chart
       water   = {pie_water_value}
       energy  = {pie_energy_value}
@@ -296,38 +312,23 @@
       sugar   = {pie_sugar_value}
       />
     </div>
-    {#if recipe_items[reactive_recipeValue].length != 0}
+    {#if recipe_items[reactive_recipeIndex].length != 0}
       <form>
         <input type="text" bind:value={new_food_item}/>
         <button on:click={() => {
-          //console.log(recipe_items[reactive_recipeValue]); 
-          recipe_items[reactive_recipeValue].push({food_ID:new_food_item, qty:100}); 
-          recipe_items[reactive_recipeValue] = recipe_items[reactive_recipeValue];
+          //console.log(recipe_items); 
+          recipe_items[reactive_recipeIndex].push({food_ID:new_food_item, qty:100}); 
+          recipe_items[reactive_recipeIndex] = recipe_items[reactive_recipeIndex];
           can_add = false
 
-          //console.log(recipe_items[reactive_recipeValue].map(v => ( v.food_ID )));
+          //console.log(recipe_items[reactive_recipeIndex].map(v => ( v.food_ID )));
           
         
 
         }}>Add Food Item</button>
-        <button  on:click={() => {
-          console.log(water_sum_arr)}}>Show water sum array</button>
-        
-        <button  on:click={() => {
-          console.log(water_sum_arr[0]);
-          console.log(water_sum_arr.length)
-          water_sum = water_sum_arr[0]
-          }}>Show water sum array first element</button>
-
-        <button on:click={() => {
-
-          pie_water.set(4);
-          console.log(pie_water_value);
-
-        }}>Change Chart Data Test</button>
       </form>
       
-      <h2>'{recipe_list_arr[reactive_recipeValue].name}' food items:</h2>
+      <h2>'{recipe_list_arr[reactive_recipeIndex].name}' food items:</h2>
       <table>
         <tr style="font-weight: bolder;">
           <td>  Qty. (g)</td>
@@ -346,7 +347,7 @@
           <td>                            </td>
         </tr>
         
-        {#each recipe_items[reactive_recipeValue] as foodItem, i}
+        {#each recipe_items[reactive_recipeIndex] as foodItem, i}
           <tr>
             <td >
               <form>
@@ -359,14 +360,14 @@
             <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.com_Name      }</td>
             <td>{foodItems.find(element => element.food_ID == foodItem.food_ID)?.edi_Portion   }</td>
 
-            <td>{water_sum_arr   [i] = Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.water         == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.water)/100)         * foodItem.qty).toFixed(2))}</td>
-            <td>{energy_sum_arr  [i] = Number( foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy        == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.energy)/100)        * foodItem.qty).toFixed(2))}</td>
-            <td>{protein_sum_arr [i] = Number( foodItems.find(element => element.food_ID == foodItem.food_ID)?.protein       == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.protein)/100)       * foodItem.qty).toFixed(2))}</td>
-            <td>{fat_sum_arr     [i] = Number( foodItems.find(element => element.food_ID == foodItem.food_ID)?.total_fat     == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.total_fat)/100)     * foodItem.qty).toFixed(2))}</td>
-            <td>{carb_sum_arr    [i] = Number( foodItems.find(element => element.food_ID == foodItem.food_ID)?.carbohydrates == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.carbohydrates)/100) * foodItem.qty).toFixed(2))}</td>
-            <td>{ash_sum_arr     [i] = Number( foodItems.find(element => element.food_ID == foodItem.food_ID)?.ash           == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.ash)/100)           * foodItem.qty).toFixed(2))}</td>
-            <td>{fiber_sum_arr   [i] = Number( foodItems.find(element => element.food_ID == foodItem.food_ID)?.fiber         == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.fiber)/100)         * foodItem.qty).toFixed(2))}</td>
-            <td>{sugar_sum_arr   [i] = Number( foodItems.find(element => element.food_ID == foodItem.food_ID)?.sugars        == "-" ? 0 : ((Number(foodItems.find(element => element.food_ID == foodItem.food_ID)?.sugars)/100)        * foodItem.qty).toFixed(2))}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
 
             <td style="display:flex;">
               <button>View {i}</button>
@@ -377,30 +378,15 @@
         {/each}
 
         <tr style="text-align: center; font-weight:bold; font-size:20px">
-          <td colspan="5">
-            <button on:click={() => {
-              water_sum   = sumFunc(water_sum_arr);
-              energy_sum  = sumFunc(energy_sum_arr)
-              protein_sum = sumFunc(protein_sum_arr)
-              fat_sum     = sumFunc(fat_sum_arr)
-              carb_sum    = sumFunc(carb_sum_arr)
-              ash_sum     = sumFunc(ash_sum_arr)
-              fiber_sum   = sumFunc(fiber_sum_arr)
-              sugar_sum   = sumFunc(sugar_sum_arr)
-              can_add     = true;
-              }} 
-              disabled={can_add}>
-              Calculate Total
-            </button>            
-          </td>
-          <td>{Number((water_sum)   .toFixed(2))}</td>
-          <td>{Number((energy_sum)  .toFixed(2))}</td>
-          <td>{Number((protein_sum) .toFixed(2))}</td>
-          <td>{Number((fat_sum)     .toFixed(2))}</td>
-          <td>{Number((carb_sum)    .toFixed(2))}</td>
-          <td>{Number((ash_sum)     .toFixed(2))}</td>
-          <td>{Number((fiber_sum)   .toFixed(2))}</td>
-          <td>{Number((sugar_sum)   .toFixed(2))}</td>
+          <td colspan="5"> Total </td>
+          <td></td> 
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
       </table>
       <button on:click={recipes_list}>Back to Recipes List</button>
@@ -411,14 +397,14 @@
       <button on:click={() => {
 
         
-        console.log(recipe_items[reactive_recipeValue]); 
-        recipe_items[reactive_recipeValue].push({food_ID:new_food_item, qty:100}); 
-        recipe_items[reactive_recipeValue] = recipe_items[reactive_recipeValue];
+        console.log(recipe_items[reactive_recipeIndex]); 
+        recipe_items[reactive_recipeIndex].push({food_ID:new_food_item, qty:100}); 
+        recipe_items[reactive_recipeIndex] = recipe_items[reactive_recipeIndex];
       
 
       }}>Add Food Item</button>
     </form>
-      <h2>'{recipe_list_arr[reactive_recipeValue].name}' is empty</h2>
+      <h2>'{recipe_list_arr[reactive_recipeIndex].name}' is empty</h2>
       <button on:click={recipes_list}>Back to Recipes List</button>
     {/if}
 
@@ -429,10 +415,7 @@
   {/if}
 
   {#if tab==6}
-    <div style="width:500px; height:500px">
-      <Chart/>
-    </div>
-    
+  <Chart/>
   {/if}
 
 
@@ -453,5 +436,9 @@
     border-radius: 5px;
     padding: 4px;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+
+  #Chart{
+    
   }
 </style>
