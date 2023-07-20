@@ -20,7 +20,7 @@
   }
 
   function return_to_login_page(){
-    console.log("NO USER FOUND BITCH")
+    console.log("NO USER FOUND")
   }
 </script>
 

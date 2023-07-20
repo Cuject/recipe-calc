@@ -235,13 +235,13 @@
   <button on:click={logOut} disabled={loading}>{loading ? "Loading..." : "Log out"}</button>
 </div>
 
+<button on:click={logOut} disabled={loading}>{loading ? "Loading..." : "Log out"}</button>
 
 
 <div>
   <h1>  Food Item List from FCT                            </h1>
-  <h2>  currently on tab {tabValue}                        </h2>
-  <h2>  currently on recipe index {reactive_recipeIndex}   </h2>
-  <p>   Connected with email {user.email}                  </p>
+  <h2 style="display:none">  currently on tab {tabValue}                        </h2>
+  <p  style="display:none">   Connected with email {user.email}                  </p>
   <p>   <a href="/profile">See your profile</a>            </p>
   <hr/>
 
@@ -440,5 +440,9 @@
 
   #Chart{
     
+  }
+
+  #navButtons{
+    display:none;
   }
 </style>

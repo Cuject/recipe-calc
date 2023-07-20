@@ -62,11 +62,11 @@
 	<button on:click={addToArray} formaction={form_call_add}>Add recipe</button>
 </form>
 
-<button on:click={show}>
+<button on:click={show} style="display:none">
 	Show
 </button>
 
-<button on:click={() => setIndex(5)}>Set Index</button>
+<button on:click={() => setIndex(5)} style="display:none">Set Index</button>
 
 {#each $list_arr as item, i}
 <div id = "recipe_box">
@@ -89,6 +89,9 @@
 		justify-content: space-between;
 		padding: 3px;
 		margin-bottom: 2px;
-		background-color: cadetblue;
+		background-color:beige;
+		border: 3px solid green;
+		border-radius: 5px;
+		font-size:1.5rem;
 	}
 </style>
